@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: emr-job-template
+  namespace: machine-learning-argo-run
+spec:
+  entrypoint: run-emr-job
+  templates:
+  - name: run-emr-job
+    inputs:
+      parameters:
+        - name: virtual-cluster-id
+        - name: emr-job-name
+        - name: execution-role-arn
+        - name: emr-release-label
+        - name: job-repository
+        - name: job-version
+        - name: job-entrypoint
+        - name: args-entrypoint
+          value: '[]'
+        - name: configuration-overrides
+        - name: spark-executor-instances
+        - name: spark-executor-memory
+        - name: spark-executor-cores
+        - name: spark-driver-memory
+        - name: spark-driver-cores
+        - name: spark-jars
+          value: local:///usr/lib/hudi/hudi-spark3-bundle_2.12-0.10.0.jar,local:///usr/lib/hudi/mssql-jdbc-6.2.2.jre8.jar
+    steps:
+      - - name: trigger-job
+          template: trigger-job
+          arguments:
+            parameters:
+              - name: virtual-cluster-id
+                value: "{{inputs.parameters.virtual-cluster-id}}"
+              - name: emr-job-name
+                value: "{{inputs.parameters.emr-job-name}}"
+              - name: execution-role-arn
+                value: "{{inputs.parameters.execution-role-arn}}"
+              - name: emr-release-label
+                value: "{{inputs.parameters.emr-release-label}}"
+              - name: job-driver
+                value: |
+                  {
+                      "sparkSubmitJobDriver": {
+                          "entryPoint": "{{inputs.parameters.job-entrypoint}}",
+                          "entryPointArguments": {{inputs.parameters.args-entrypoint}},
+                          "sparkSubmitParameters": "--conf spark.kubernetes.container.image={{inputs.parameters.job-repository}}:{{inputs.parameters.job-version}} --jars {{inputs.parameters.spark-jars}} --conf spark.executor.instances={{inputs.parameters.spark-executor-instances}} --conf spark.executor.memory={{inputs.parameters.spark-executor-memory}} --conf spark.executor.cores={{inputs.parameters.spark-executor-cores}} --conf spark.driver.memory={{inputs.parameters.spark-driver-memory}} --conf spark.driver.cores={{inputs.parameters.spark-driver-cores}}" 
+                      }
+                  }
+              - name: configuration-overrides
+                value: "{{inputs.parameters.configuration-overrides}}"
+
+      - - name: poll-job-state
+          template: poll-job-state
+          arguments:
+            parameters:
+              - name: message
+                value: "{{steps.trigger-job.outputs.result}}"
+              - name: virtual-cluster-id
+                value: "{{inputs.parameters.virtual-cluster-id}}"
