@@ -25,7 +25,6 @@ BLOCK_NO_MATCH_COLLECTION_SOURCE_IDS = {17, 42, 44, 66, 108, 120, 122}
 
 class Exporter():
 
-    # we might want to export slightly different columns that we read (eg full name)
     raw_col_to_export = ['first_name', 'middle_name', 'last_name', 'designation', 'full_name_oth', 'address', 'city', 'state', 'country', 'city_oth', 'state_oth', 'country_oth', 'npi', 'orcid', 'specialty', 'title', 'role_name', 'email', 'specialty_oth', 'organization_name', 'organization_name_oth', 'social_urls', 'person_listing_url', 'other_ids', 'is_npi_deactivated']
 
     def __init__(self, config):
