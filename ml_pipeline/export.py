@@ -9,7 +9,6 @@ import sys
 
 logger = logging.getLogger('ml_em.model.export')
 
-# This should be somewhere in tess, but I can't find it. Just hardcoding it for now
 PROJECT_ID_LOOKUP = {
     'gpo': 300,
     'pm': 251
@@ -21,7 +20,6 @@ MASTER_RECORD_TYPES = ['pm']
 DEFAULT_MIN_MATCH_SCORE = 0.2
 DEFAULT_AUTO_QA_APPROVE_THRESHOLD = 0.9
 
-# this should be in the tess db itself see https://h1insights.atlassian.net/browse/DSML-36
 BLOCK_NO_MATCH_COLLECTION_SOURCE_IDS = {17, 42, 44, 66, 108, 120, 122}
 
 
@@ -144,7 +142,7 @@ class Exporter():
         src_cols_str = ','.join([f'{col} {col}_src' for col in self.raw_col_to_export])
         tgt_cols_str = ','.join([f'{col} {col}_tgt' for col in self.raw_col_to_export])
 
-        # this doesn't follow good python indent rules to better format query
+        
         cte_c = f"""
 WITH
 all_src AS (
