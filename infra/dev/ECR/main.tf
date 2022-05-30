@@ -1,6 +1,6 @@
-module "ct-aact-ingestor" {
+module "ml-em" {
   source = "../../modules/ecr"
-  name = "h1-data-science-ml-em"
+  name = "data-science-ml-em"
 
   tags = {
     Owner       = "data-science"
