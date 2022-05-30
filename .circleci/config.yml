@@ -1,1 +1,24 @@
+version: 2.1
+orbs:
+  docker: circleci/docker@1.7.0
+  aws-cli: circleci/aws-cli@2.0.3
 
+workflows:
+  deploy_image:
+    jobs:
+      - deploy-docker-image:
+          context: 
+            - terraform-datascience
+
+jobs:
+  deploy-docker-image:
+    executor: docker/docker
+    steps:
+      - checkout
+      - aws-cli/install
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build images, tag and push
+          command: |
+            make deploy
