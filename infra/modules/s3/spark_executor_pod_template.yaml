@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+spec:
+  nodeSelector:
+    team: data-science-spark-executor
+  tolerations:
+  - key: "data-science"
+    operator: "Equal"
+    value: "executor"
+    effect: "NoSchedule"

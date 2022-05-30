@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+spec:
+  nodeSelector:
+    team: data-science-spark-driver
+  tolerations:
+  - key: "data-science"
+    operator: "Equal"
+    value: "driver"
+    effect: "NoSchedule"
