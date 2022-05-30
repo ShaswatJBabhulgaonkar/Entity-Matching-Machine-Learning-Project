@@ -5,5 +5,5 @@ module "eks" {
 
   tags = {
     Environment = "dev"
-    Owner       = "data-platform"
+    Owner       = "data-science"
   }
